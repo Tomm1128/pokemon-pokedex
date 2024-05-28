@@ -15,8 +15,6 @@ const displayPokemon = (pokemon) => {
 
   const img = document.createElement("img")
   const h2 = document.createElement("h2")
-  const p = document.createElement("p")
-  const span = document.createElement("span")
 
   const pokemonSprite = pokemon.sprites.front_default
   const pokemonName = pokemon.name[0].toUpperCase() + pokemon.name.slice(1)
