@@ -39,7 +39,7 @@ const displayPokemon = (pokemon) => {
   h2.textContent = pokemonName
   h3.textContent = "Types:"
   hp.textContent = `HP: ${pokemonHp}`
-  heightAndWeight.textContent = `Height: ${pokemonHeight}'', Weight: ${pokemonWeight} ibs`
+  heightAndWeight.textContent = `Height: ${pokemonHeight}'', Weight: ${pokemonWeight} lbs`
 
   pokemonTypes.forEach((type) => {
     const li = document.createElement("li")
