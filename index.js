@@ -14,11 +14,9 @@ const getPokemonTypes = (pokemon) => {
 const displayPokemon = (pokemon) => {
   const pokedexSection = document.getElementById("pokedex")
   const detailsSection = document.getElementById("pokedex-details")
-  const typesSection = document.getElementById("types-section")
 
   pokedexSection.innerHTML = " "
   detailsSection.innerHTML = " "
-  typesSection.innerHTML = " "
 
   const img = document.createElement("img")
   const h2 = document.createElement("h2")
@@ -52,8 +50,8 @@ const displayPokemon = (pokemon) => {
   detailsSection.appendChild(h2)
   detailsSection.appendChild(hp)
   detailsSection.appendChild(heightAndWeight)
-  typesSection.appendChild(h3)
-  typesSection.appendChild(typesList)
+  detailsSection.appendChild(h3)
+  detailsSection.appendChild(typesList)
 }
 
 const getPokemon = (id = randomPokemon) => {
