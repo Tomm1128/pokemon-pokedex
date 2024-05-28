@@ -1,4 +1,4 @@
-const randomPokemon = Math.floor(Math.random() * 100)
+const randomPokemon = (Math.floor(Math.random() * 100) + 1)
 
 const handleUserInput = (event) => {
   event.preventDefault()
@@ -9,9 +9,7 @@ const handleUserInput = (event) => {
 const getPokemonTypes = (pokemon) => {
   const pokemonTypes = pokemon.types
   let typeArray = []
-  pokemonTypes.forEach((types) => {
-    typeArray.push(types.type.name)
-  })
+  pokemonTypes.map(type => typeArray.push(type.type.name))
   return typeArray
 }
 
