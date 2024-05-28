@@ -16,6 +16,6 @@
 * User Story: As a user, I want to be able to favorite a pokemon to easily save them to vie w them later
 * Details: Add a save button to the screen. When clicked, the pokemon will be saved and their info stored in the db.json using json-server. This can also be achieved using an event listener on the save button.
 
-## (Stretch Goal) Feature 5: Save a Favorite Pokemon
+## (Stretch Goal) Feature 5: Save a Pokemon Team
 * User Story: As a user, I want to be able to favorite 6 pokemon and create a mock pokemon team.
 * Details: Using the save button made above, when clicked, the pokemon will be saved and their info stored in the db.json using json-server. Add an order column to db with favorite Pokemon, order 1 to 6. Add a team button to load the team and display to user.
