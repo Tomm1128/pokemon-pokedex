@@ -2,7 +2,6 @@ const randomPokemon = Math.floor(Math.random() * 100)
 
 const displayPokemon = (pokemon) => {
   const pokemonSection = document.getElementById("pokemon-details")
-  // debugger
 }
 
 const getPokemon = (id = randomPokemon) => {
