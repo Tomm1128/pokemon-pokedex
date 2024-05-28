@@ -1,6 +1,25 @@
 body {
-  display:grid
+  display:grid;
 }
+
 h1 {
   text-align: center;
+}
+
+#pokedex {
+  background-image: url(images/pokedex.png);
+  background-repeat: no-repeat;
+  display:grid;
+  background-size: 600px;
+  height: 600px;
+  width: 600px;
+  place-self: center;
+}
+
+#sprite {
+  place-self: center;
+  height: 150px;
+  width: 150px;
+  padding-bottom: 200px;
+  padding-left: 25px;
 }
