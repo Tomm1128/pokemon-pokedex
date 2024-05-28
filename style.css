@@ -55,3 +55,24 @@ h1 {
   grid-column-end: 2;
   place-self: center;
 }
+
+#pokedex-entry{
+  grid-row-start: 2;
+  grid-row-end: 2;
+  grid-column-start: 3;
+  grid-column-end: 3;
+}
+
+#name {
+  background-color: white;
+  height: 75px;
+  width: 300px;
+  background-image: linear-gradient(to bottom, red 40%, rgba(0,0,0,0) 20%);
+  outline: solid;
+  outline-color: red;
+}
+
+#ht-wt {
+  height: 300px;
+  width: 300px;
+}
