@@ -7,14 +7,19 @@ h1 {
 }
 
 #pokedex {
+  background-image: url(images/pokedex.png);
+  background-repeat: no-repeat;
   display:grid;
-  height: 300px;
-  width: 300px;
-  padding-right: 100px;
+  background-size: 600px;
+  height: 600px;
+  width: 600px;
   place-self: center;
 }
 
 #sprite {
   place-self: center;
-  padding-left: 100px;
+  height: 150px;
+  width: 150px;
+  padding-bottom: 200px;
+  padding-left: 25px;
 }
