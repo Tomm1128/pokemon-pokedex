@@ -8,9 +8,7 @@ const handleUserInput = (event) => {
 
 const getPokemonTypes = (pokemon) => {
   const pokemonTypes = pokemon.types
-  let typeArray = []
-  pokemonTypes.map(type => typeArray.push(type.type.name))
-  return typeArray
+  return pokemonTypes.map(type => type.type.name)
 }
 
 const displayPokemon = (pokemon) => {
