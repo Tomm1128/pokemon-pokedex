@@ -49,6 +49,7 @@ h1 {
 
 #pokedex-entry{
   display: grid;
+  grid-template-columns: auto auto auto;
   grid-row-start: 3;
   grid-row-end: 3;
   grid-column-start: 2;
@@ -66,6 +67,10 @@ h1 {
   justify-self: right;
   border-radius: 25px;
   margin: 10px;
+  grid-row-start: 1;
+  grid-row-end: 1;
+  grid-column-start: 3;
+  grid-column-end: 3;
 }
 
 h2 {
@@ -83,6 +88,10 @@ h2 {
   justify-self: right;
   border-radius: 15px;
   margin: 10px;
+  grid-row-start: 3;
+  grid-row-end: 3;
+  grid-column-start: 3;
+  grid-column-end: 3;
 }
 
 #types-section {
@@ -95,4 +104,50 @@ h2 {
   border-radius: 15px;
   margin-right: 100px;
   margin: 10px;
+  grid-row-start: 2;
+  grid-row-end: 2;
+  grid-column-start: 3;
+  grid-column-end: 3;
 }
+
+#favorite-pokemon {
+  width: 100px;
+  height: 50px;
+  justify-self: right;
+  grid-row-start: 1;
+  grid-row-end:1;
+  grid-column-start: 2;
+  grid-column-end: 2;
+}
+
+#pokemon-team {
+  grid-row-start: 2;
+  grid-row-end:2;
+  grid-column-start: 1;
+  grid-column-end: 1;
+  display:grid
+}
+
+.team-slots{
+  display: inline-flex;
+  background-color: green;
+  border: solid;
+  border-color: greenyellow;
+  border-radius: 25px;
+  margin: 5px;
+  height: 75px;
+  width: 400px
+}
+
+.remove-from-team{
+ align-self: flex-end;
+}
+
+.team-sprite {
+  height: 70px;
+  width: 70px;
+}
+
+/* #team-slot-1 {
+  display: inline-flex;
+} */
