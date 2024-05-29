@@ -37,6 +37,7 @@ const handleDelete = (event) => {
 }
 
 const displayTeam = (pokemon) => {
+  const teamSection = document.getElementById("pokemon-team")
   const teamSlots = [...document.getElementsByClassName("team-slots")]
   const currentSlot = teamSlots.find((slots) => slots.childElementCount < 2)
   const sprite = document.createElement("img")
@@ -55,13 +56,35 @@ const displayTeam = (pokemon) => {
   currentSlot.appendChild(deleteButton)
 
   deleteButton.addEventListener("click", handleDelete)
+
+  // currentSlot.addEventListener("dragstart", (event) => {
+  //   event.dataTransfer.setData('text/plain', event.target.id)
+  //   event.dataTransfer.effectAllowed = "move"
+  // })
+
+  // teamSection.addEventListener('dragover', (event) => {
+  //   event.preventDefault();
+  //   event.dataTransfer.dropEffect = "move";
+  // })
+
+  // teamSection.addEventListener("drop", (event) => {
+  //   event.preventDefault();
+  //   debugger
+  //   const data = event.dataTransfer.getData('text/plain')
+  //   const draggedElement = document.getElementById(data)
+  //   event.target.appendChild(draggedElement);
+  // })
 }
 
 const handleFavorite = (pokemon) => {
   const teamSlots = [...document.getElementsByClassName("team-slots")]
   const currentSlot = teamSlots.find((slots) => slots.id === "")
   if (currentSlot !== undefined){
-    count = Number(currentSlot.previousElementSibling.id) + 1
+    if (!currentSlot.previousElementSibling){
+      count = 1
+    } else {
+      count = Number(currentSlot.previousElementSibling.id) + 1
+    }
     pokemon.id = count.toString()
 
     fetch(`http://localhost:3000/pokemon-team`, {
@@ -100,6 +123,9 @@ const displayPokemon = (pokemon) => {
 
   pokedexSection.innerHTML = " "
   detailsSection.innerHTML = " "
+  typesSection.textContent = " "
+  nameSection.textContent = " "
+
 
   const img = document.createElement("img")
   const h2 = document.createElement("h2")
