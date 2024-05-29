@@ -1,6 +1,30 @@
 const randomPokemon = (Math.floor(Math.random() * 100) + 1)
 let count = 0
 
+const handleDelete = (event) => {
+  if (event.target.parentElement.id === "1"){
+    count = 0
+  }
+
+  const pokemonSlot = event.target.parentElement
+  const id = pokemonSlot.id
+
+  fetch(`http://localhost:3000/pokemon-team/${id}`, {
+      method: "Delete",
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(resp => resp.json())
+    .then(_data => {
+      pokemonSlot.textContent = ""
+    })
+    .catch(error => {
+      console.error('Error deleting resource:', error);
+    })
+
+}
+
 const displayTeam = (pokemon) => {
 
   const teamSection = document.getElementById("pokemon-team")
@@ -21,6 +45,8 @@ const displayTeam = (pokemon) => {
   currentSlot.appendChild(sprite)
   currentSlot.appendChild(name)
   currentSlot.appendChild(deleteButton)
+
+  deleteButton.addEventListener("click", handleDelete)
 }
 
 const handleFavorite = (pokemon) => {
@@ -28,7 +54,7 @@ const handleFavorite = (pokemon) => {
   const currentSlot = teamSlots.find((slots) => slots.id === "")
   if (currentSlot !== undefined){
     count = Number(currentSlot.previousElementSibling.id) + 1
-    pokemon.id = count
+    pokemon.id = count.toString()
 
     fetch(`http://localhost:3000/pokemon-team`, {
       method: "POST",
