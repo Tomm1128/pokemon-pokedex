@@ -1,4 +1,5 @@
 const randomPokemon = (Math.floor(Math.random() * 100) + 1)
+let count = 0
 
 const displayTeam = (pokemon) => {
 
@@ -25,8 +26,7 @@ const displayTeam = (pokemon) => {
 const handleFavorite = (pokemon) => {
   const teamSlots = [...document.getElementsByClassName("team-slots")]
   const currentSlot = teamSlots.find((slots) => slots.id === "")
-  let count
-  if (count <= 6){
+  if (currentSlot !== undefined){
     count = Number(currentSlot.previousElementSibling.id) + 1
     pokemon.id = count
 
