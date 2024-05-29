@@ -47,32 +47,52 @@ h1 {
   margin: 5px;
 }
 
-#pokedex-details {
-  width: 300px;
+#pokedex-entry{
+  display: grid;
   grid-row-start: 3;
   grid-row-end: 3;
   grid-column-start: 2;
   grid-column-end: 2;
-  place-self: center;
+  margin: 10px;
 }
 
-#pokedex-entry{
-  grid-row-start: 2;
-  grid-row-end: 2;
-  grid-column-start: 3;
-  grid-column-end: 3;
-}
-
-#name {
+#name-section {
   background-color: white;
   height: 75px;
   width: 300px;
   background-image: linear-gradient(to bottom, red 40%, rgba(0,0,0,0) 20%);
   outline: solid;
   outline-color: red;
+  justify-self: right;
+  border-radius: 25px;
+  margin: 10px;
 }
 
-#ht-wt {
-  height: 300px;
-  width: 300px;
+h2 {
+  text-align: right;
+  padding-top: 15px;
+  padding-right: 10px;
+}
+
+#details-section {
+  height: 150px;
+  width: 400px;
+  outline: solid;
+  outline-color: black;
+  outline-width: medium;
+  justify-self: right;
+  border-radius: 15px;
+  margin: 10px;
+}
+
+#types-section {
+  height: 100px;
+  width: 200px;
+  outline: solid;
+  outline-color: black;
+  outline-width: medium;
+  justify-self: right;
+  border-radius: 15px;
+  margin-right: 100px;
+  margin: 10px;
 }
