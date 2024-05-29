@@ -2,9 +2,18 @@ const randomPokemon = (Math.floor(Math.random() * 100) + 1)
 let count
 let currentTeam = []
 
+const handleCry = (cryObj) => {
+  const audioPlayer = document.getElementById("audio-player")
+  if (cryObj.legacy){
+    audioPlayer.src = cryObj.legacy
+  } else {
+    audioPlayer.src = cryObj.latest
+  }
+  audioPlayer.play()
+}
+
 const handleDelete = (event) => {
   const teamSlots = [...document.getElementsByClassName("team-slots")]
-  const teamSection = document.getElementById("pokemon-team")
   const pokemonSlot = event.target.parentElement
   const id = pokemonSlot.id
 
@@ -25,11 +34,9 @@ const handleDelete = (event) => {
     .catch(error => {
       console.error('Error deleting resource:', error);
     })
-
 }
 
 const displayTeam = (pokemon) => {
-
   const teamSlots = [...document.getElementsByClassName("team-slots")]
   const currentSlot = teamSlots.find((slots) => slots.childElementCount < 2)
   const sprite = document.createElement("img")
@@ -134,6 +141,7 @@ const displayPokemon = (pokemon) => {
   typesSection.appendChild(typesList)
 
   favoriteButton.addEventListener("click", (_event) => handleFavorite(pokemon))
+  img.addEventListener("click", (_event) => handleCry(pokemon.cry))
 }
 
 const createPokemon = (pokemon) => {
@@ -143,7 +151,8 @@ const createPokemon = (pokemon) => {
     hp: pokemon.stats[0].base_stat,
     height: pokemon.height,
     weight: pokemon.weight,
-    sprite: pokemon.sprites.front_default
+    sprite: pokemon.sprites.front_default,
+    cry:pokemon.cries
   }
   displayPokemon(newPokemon)
 }
