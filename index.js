@@ -1,10 +1,36 @@
 const randomPokemon = (Math.floor(Math.random() * 100) + 1)
+let count
+let currentTeam = []
+
+const handleDelete = (event) => {
+  const teamSlots = [...document.getElementsByClassName("team-slots")]
+  const teamSection = document.getElementById("pokemon-team")
+  const pokemonSlot = event.target.parentElement
+  const id = pokemonSlot.id
+
+  fetch(`http://localhost:3000/pokemon-team/${id}`, {
+      method: "Delete",
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(resp => resp.json())
+    .then(_data => {
+      teamSlots.forEach((slot) => {
+        slot.textContent = ""
+        slot.id = ""
+      })
+      getTeam()
+    })
+    .catch(error => {
+      console.error('Error deleting resource:', error);
+    })
+
+}
 
 const displayTeam = (pokemon) => {
 
-  const teamSection = document.getElementById("pokemon-team")
   const teamSlots = [...document.getElementsByClassName("team-slots")]
-
   const currentSlot = teamSlots.find((slots) => slots.childElementCount < 2)
   const sprite = document.createElement("img")
   const name = document.createElement("h3")
@@ -20,15 +46,16 @@ const displayTeam = (pokemon) => {
   currentSlot.appendChild(sprite)
   currentSlot.appendChild(name)
   currentSlot.appendChild(deleteButton)
+
+  deleteButton.addEventListener("click", handleDelete)
 }
 
 const handleFavorite = (pokemon) => {
   const teamSlots = [...document.getElementsByClassName("team-slots")]
   const currentSlot = teamSlots.find((slots) => slots.id === "")
-  let count
-  if (count <= 6){
+  if (currentSlot !== undefined){
     count = Number(currentSlot.previousElementSibling.id) + 1
-    pokemon.id = count
+    pokemon.id = count.toString()
 
     fetch(`http://localhost:3000/pokemon-team`, {
       method: "POST",
@@ -38,6 +65,8 @@ const handleFavorite = (pokemon) => {
       },
       body: JSON.stringify(pokemon)
     })
+    .then(resp => resp.json())
+    .then(displayTeam)
   }
   else {
     alert ("Team is full")
@@ -123,6 +152,7 @@ const getTeam = () => {
   fetch(`http://localhost:3000/pokemon-team`)
   .then(resp => resp.json())
   .then(team => {
+    currentTeam = team
     team.forEach(pokemon => displayTeam(pokemon) )
   })
 }
