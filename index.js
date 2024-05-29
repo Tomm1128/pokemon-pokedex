@@ -1,11 +1,10 @@
 const randomPokemon = (Math.floor(Math.random() * 100) + 1)
-let count = 0
+let count
+let currentTeam = []
 
 const handleDelete = (event) => {
-  if (event.target.parentElement.id === "1"){
-    count = 0
-  }
-
+  const teamSlots = [...document.getElementsByClassName("team-slots")]
+  const teamSection = document.getElementById("pokemon-team")
   const pokemonSlot = event.target.parentElement
   const id = pokemonSlot.id
 
@@ -17,7 +16,11 @@ const handleDelete = (event) => {
     })
     .then(resp => resp.json())
     .then(_data => {
-      pokemonSlot.textContent = ""
+      teamSlots.forEach((slot) => {
+        slot.textContent = ""
+        slot.id = ""
+      })
+      getTeam()
     })
     .catch(error => {
       console.error('Error deleting resource:', error);
@@ -27,9 +30,7 @@ const handleDelete = (event) => {
 
 const displayTeam = (pokemon) => {
 
-  const teamSection = document.getElementById("pokemon-team")
   const teamSlots = [...document.getElementsByClassName("team-slots")]
-
   const currentSlot = teamSlots.find((slots) => slots.childElementCount < 2)
   const sprite = document.createElement("img")
   const name = document.createElement("h3")
@@ -64,6 +65,8 @@ const handleFavorite = (pokemon) => {
       },
       body: JSON.stringify(pokemon)
     })
+    .then(resp => resp.json())
+    .then(displayTeam)
   }
   else {
     alert ("Team is full")
@@ -149,6 +152,7 @@ const getTeam = () => {
   fetch(`http://localhost:3000/pokemon-team`)
   .then(resp => resp.json())
   .then(team => {
+    currentTeam = team
     team.forEach(pokemon => displayTeam(pokemon) )
   })
 }
