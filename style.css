@@ -1,5 +1,13 @@
 body {
   display:grid;
+  grid-template-columns: auto auto auto;
+}
+
+#header {
+  grid-column-start: 2;
+  grid-column-end: 2;
+  grid-row-start: 1;
+  grid-row-end: 1;
 }
 
 h1 {
@@ -7,10 +15,14 @@ h1 {
 }
 
 #pokedex {
+  display: grid;
   background-image: url(images/pokedex.png);
   background-repeat: no-repeat;
-  display:grid;
   background-size: 300px;
+  grid-row-start: 2;
+  grid-row-end: 3;
+  grid-column-start: 2;
+  grid-column-end: 3;
   height: 500px;
   width: 300px;
   place-self: center;
@@ -20,7 +32,7 @@ h1 {
   place-self: center;
   height: 200px;
   width: 200px;
-  padding-bottom: 75px;
+  padding-bottom: 100px;
   padding-left: 25px;
 }
 
@@ -35,15 +47,52 @@ h1 {
   margin: 5px;
 }
 
-#pokedex-details {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+#pokedex-entry{
+  display: grid;
+  grid-row-start: 3;
+  grid-row-end: 3;
+  grid-column-start: 2;
+  grid-column-end: 2;
+  margin: 10px;
+}
+
+#name-section {
+  background-color: white;
+  height: 75px;
+  width: 300px;
+  background-image: linear-gradient(to bottom, red 40%, rgba(0,0,0,0) 20%);
+  outline: solid;
+  outline-color: red;
+  justify-self: right;
+  border-radius: 25px;
+  margin: 10px;
+}
+
+h2 {
+  text-align: right;
+  padding-top: 15px;
+  padding-right: 10px;
+}
+
+#details-section {
+  height: 150px;
+  width: 400px;
+  outline: solid;
+  outline-color: black;
+  outline-width: medium;
+  justify-self: right;
+  border-radius: 15px;
+  margin: 10px;
 }
 
 #types-section {
-  place-self: center;
-  height: 200px;
+  height: 100px;
   width: 200px;
+  outline: solid;
+  outline-color: black;
+  outline-width: medium;
+  justify-self: right;
+  border-radius: 15px;
+  margin-right: 100px;
+  margin: 10px;
 }

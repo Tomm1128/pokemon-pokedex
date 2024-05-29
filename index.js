@@ -13,12 +13,12 @@ const getPokemonTypes = (pokemon) => {
 
 const displayPokemon = (pokemon) => {
   const pokedexSection = document.getElementById("pokedex")
-  const detailsSection = document.getElementById("pokedex-details")
+  const detailsSection = document.getElementById("details-section")
+  const nameSection = document.getElementById("name-section")
   const typesSection = document.getElementById("types-section")
 
   pokedexSection.innerHTML = " "
   detailsSection.innerHTML = " "
-  typesSection.innerHTML = " "
 
   const img = document.createElement("img")
   const h2 = document.createElement("h2")
@@ -49,7 +49,7 @@ const displayPokemon = (pokemon) => {
   img.src = pokemonSprite
 
   pokedexSection.appendChild(img)
-  detailsSection.appendChild(h2)
+  nameSection.appendChild(h2)
   detailsSection.appendChild(hp)
   detailsSection.appendChild(heightAndWeight)
   typesSection.appendChild(h3)
