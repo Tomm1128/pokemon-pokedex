@@ -15,27 +15,33 @@ const displayTeam = (pokemon) => {
   name.textContent = pokemon.name
   deleteButton.className = "remove-from-team"
   deleteButton.textContent = "X"
+  currentSlot.id = pokemon.id
 
   currentSlot.appendChild(sprite)
   currentSlot.appendChild(name)
   currentSlot.appendChild(deleteButton)
-
 }
 
 const handleFavorite = (pokemon) => {
-  displayTeam(pokemon)
-//   const newPokemon = {
+  const teamSlots = [...document.getElementsByClassName("team-slots")]
+  const currentSlot = teamSlots.find((slots) => slots.id === "")
+  let count
+  if (count <= 6){
+    count = Number(currentSlot.previousElementSibling.id) + 1
+    pokemon.id = count
 
-//   }
-
-//   fetch(`http://localhost:3000/pokemon-team`, {
-//     method: "POST",
-//     headers: {
-//       'Accept': 'application/json',
-//       'Content-Type': 'application/json'
-//     },
-//     body: JSON.stringify(pokemon)
-//   })
+    fetch(`http://localhost:3000/pokemon-team`, {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(pokemon)
+    })
+  }
+  else {
+    alert ("Team is full")
+  }
 }
 
 const handleUserInput = (event) => {
@@ -78,7 +84,7 @@ const displayPokemon = (pokemon) => {
   h3.textContent = "Types:"
   hp.textContent = `HP: ${pokemonHp}`
   heightAndWeight.textContent = `Height: ${pokemonHeight}'', Weight: ${pokemonWeight} lbs`
-  favoriteButton.textContent = "Favorite Pokémon"
+  favoriteButton.textContent = "Add to Team"
   favoriteButton.id = "favorite-pokemon"
 
   pokemonTypes.forEach((type) => {
@@ -113,6 +119,14 @@ const createPokemon = (pokemon) => {
   displayPokemon(newPokemon)
 }
 
+const getTeam = () => {
+  fetch(`http://localhost:3000/pokemon-team`)
+  .then(resp => resp.json())
+  .then(team => {
+    team.forEach(pokemon => displayTeam(pokemon) )
+  })
+}
+
 const getPokemon = (id = randomPokemon) => {
   fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
   .then(resp => resp.json())
@@ -122,6 +136,7 @@ const getPokemon = (id = randomPokemon) => {
 const init = () => {
   const pokemonSearchForm = document.getElementById("pokemon-search")
   getPokemon()
+  getTeam()
 
   pokemonSearchForm.addEventListener("submit", handleUserInput)
 }
