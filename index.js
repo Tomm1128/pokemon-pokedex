@@ -28,7 +28,7 @@ const handleDelete = (event) => {
     .then(_data => {
       teamSlots.forEach((slot) => {
         slot.textContent = ""
-        slot.id = ""
+        // slot.id = ""
       })
       getTeam()
     })
@@ -38,7 +38,27 @@ const handleDelete = (event) => {
 }
 
 const updateTeamOrder = () => {
+  let newId = 0
+  const slots = Array.from(teamSection.children)
+  let newOrder = slots.map((slot, index) => ({
+    id: slot.id,
+    position: index + 1
+  }))
 
+  // debugger
+
+  // newOrder.forEach(() => {
+  //   fetch(`http://localhost:3000/pokemon-team`, {
+  //     method: "PATCH",
+  //     headers: {
+  //       'Accept': 'application/json',
+  //       'Content-Type': 'application/json'
+  //     },
+  //     body: JSON.stringify(newOrder)
+  //   })
+  //   .then(resp => resp.json())
+  //   .then(console.log)
+  // })
 }
 
 const handleDragStart = (event) => {
@@ -88,7 +108,6 @@ const displayTeam = (pokemon) => {
   name.textContent = pokemon.name
   deleteButton.className = "remove-from-team"
   deleteButton.textContent = "X"
-  currentSlot.id = pokemon.id
 
   currentSlot.appendChild(sprite)
   currentSlot.appendChild(name)
@@ -105,15 +124,10 @@ const displayTeam = (pokemon) => {
 
 const handleFavorite = (pokemon) => {
   const teamSlots = [...document.getElementsByClassName("team-slots")]
-  const currentSlot = teamSlots.find((slots) => slots.id === "")
+  const currentSlot = teamSlots.find((slot) => slot.childElementCount < 1)
   if (currentSlot !== undefined){
-    if (!currentSlot.previousElementSibling){
-      count = 1
-    } else {
-      count = Number(currentSlot.previousElementSibling.id) + 1
-    }
-    pokemon.id = count.toString()
-    pokemon.position = count
+    pokemon.id = currentSlot.id
+    pokemon.position = Number(currentSlot.id)
 
     fetch(`http://localhost:3000/pokemon-team`, {
       method: "POST",
