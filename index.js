@@ -28,6 +28,7 @@ const handleDelete = (event) => {
     .then(resp => resp.json())
     .then(_data => {
       pokemonSlot.textContent = ""
+      currentTeam.pop()
       updateTeamOrder()
     })
     .catch(error => {
@@ -41,7 +42,8 @@ const updateTeamOrder = () => {
   const newTeamOrder = slots.filter((slot) => slot.childElementCount > 1)
 
   newTeamOrder.forEach((slot, index) => {
-    const id = slot.id
+    const currentPokemon = currentTeam.find((pokemon) => slot.childNodes[1].textContent === pokemon.name)
+    const id = currentPokemon.id
     if(slot.childElementCount > 1){
       fetch(`http://localhost:3000/pokemon-team/${id}`, {
         method: "PATCH",
@@ -50,7 +52,7 @@ const updateTeamOrder = () => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          position: index + 1
+          position: Number(slot.id)
         })
       })
       .catch(console.log)
@@ -86,6 +88,9 @@ const handleDrop = (event) => {
     teamSection.replaceChild(targetClone, draggedTeamSlot)
     teamSection.replaceChild(draggedClone, targetTeamSlot)
 
+    draggedClone.id = targetTeamSlot.id
+    targetClone.id = draggedTeamSlot.id
+
     draggedClone.addEventListener('dragstart', handleDragStart)
     targetClone.addEventListener('dragstart', handleDragStart)
     draggedClone.addEventListener('dragover', handleDragOver)
@@ -94,9 +99,6 @@ const handleDrop = (event) => {
     targetClone.addEventListener('drop', handleDrop)
 
     updateTeamOrder()
-
-    draggedClone.id = targetTeamSlot.id
-    targetClone.id = draggedTeamSlot.id
   }
 }
 
@@ -124,15 +126,18 @@ const displayTeam = (pokemon) => {
   currentSlot.addEventListener('dragover', handleDragOver)
 
   currentSlot.addEventListener("drop", handleDrop)
-
-  currentTeam.push(pokemon)
 }
 
 const handleFavorite = (pokemon) => {
   const teamSlots = [...document.getElementsByClassName("team-slots")]
   const currentSlot = teamSlots.find((slot) => slot.childElementCount < 1)
+  const lastPokemon = currentTeam.reduce((max, current) => {
+    return current.id > max.id ? current : max;
+  })
+  let lastId = Number(lastPokemon.id)
+  const newId = lastId + 1
   if (currentSlot !== undefined){
-    pokemon.id = currentSlot.id
+    pokemon.id = newId.toString()
     pokemon.position = Number(currentSlot.id)
 
     fetch(`http://localhost:3000/pokemon-team`, {
@@ -144,7 +149,10 @@ const handleFavorite = (pokemon) => {
       body: JSON.stringify(pokemon)
     })
     .then(resp => resp.json())
-    .then(displayTeam)
+    .then(pokemon => {
+      displayTeam(pokemon)
+      currentTeam.push(pokemon)
+    })
   }
   else {
     alert ("Team is full")
@@ -236,6 +244,7 @@ const getTeam = () => {
   fetch(`http://localhost:3000/pokemon-team`)
   .then(resp => resp.json())
   .then(team => {
+    currentTeam = team
     team.forEach(pokemon => displayTeam(pokemon) )
   })
 }
