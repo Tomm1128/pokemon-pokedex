@@ -1,4 +1,3 @@
-let count
 let currentTeam = []
 let teamSection
 
@@ -144,7 +143,6 @@ const updateTeam = (pokemon) => {
     currentTeam.push(pokemon)
   })
 }
-
 
 const handleAddToTeam = (pokemon) => {
   const teamSlots = [...document.getElementsByClassName("team-slots")]
@@ -303,6 +301,5 @@ const init = () => {
   getTeam()
   handleSearch()
 }
-
 
 document.addEventListener("DOMContentLoaded", init)
