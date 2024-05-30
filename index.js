@@ -139,17 +139,20 @@ const handleFavorite = (pokemon) => {
   const teamSlots = [...document.getElementsByClassName("team-slots")]
   const currentSlot = teamSlots.find((slot) => slot.childElementCount < 1)
   let lastId
-  if (currentSlot.id === "1"){
-    lastId = 0
-  } else {
-    const lastPokemon = currentTeam.reduce((max, current) => {
-      return current.id > max.id ? current : max;
-    })
-    lastId = Number(lastPokemon.id)
-  }
+  debugger
 
-  const newId = lastId + 1
   if (currentSlot !== undefined){
+
+    if (currentSlot.id === "1"){
+      lastId = 0
+    } else {
+      const lastPokemon = currentTeam.reduce((max, current) => {
+        return current.id > max.id ? current : max;
+      })
+      lastId = Number(lastPokemon.id)
+    }
+
+    const newId = lastId + 1
     pokemon.id = newId.toString()
     pokemon.position = Number(currentSlot.id)
 
@@ -202,6 +205,12 @@ const updateDetails = (pokemon) => {
   heightAndWeight.textContent = `Height: ${pokemon.height}'', Weight: ${pokemon.weight} lbs`
   detailsSection.appendChild(hp)
   detailsSection.appendChild(heightAndWeight)
+}
+
+const updateName = (pokemon) => {
+  const nameSection = document.getElementById("name-section")
+  nameSection.textContent = " "
+
 }
 
 const displayPokemon = (pokemon) => {
