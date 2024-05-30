@@ -183,38 +183,46 @@ const getPokemonTypes = (pokemon) => {
   return pokemonTypes.map(type => type.type.name)
 }
 
-const displayPokemon = (pokemon) => {
+const updatePokedex = (pokemon) => {
   const pokedexSection = document.getElementById("pokedex")
+  pokedexSection.innerHTML = " "
+  const img = document.createElement("img")
+  img.id = "sprite"
+  img.src = pokemon.sprite
+  pokedexSection.appendChild(img)
+  img.addEventListener("click", (_event) => handleCry(pokemon.cry))
+}
+
+const updateDetails = (pokemon) => {
   const detailsSection = document.getElementById("details-section")
+  detailsSection.innerHTML = " "
+  const hp = document.createElement("p")
+  const heightAndWeight = document.createElement("p")
+  hp.textContent = `HP: ${pokemon.hp}`
+  heightAndWeight.textContent = `Height: ${pokemon.height}'', Weight: ${pokemon.weight} lbs`
+  detailsSection.appendChild(hp)
+  detailsSection.appendChild(heightAndWeight)
+}
+
+const displayPokemon = (pokemon) => {
+  updatePokedex(pokemon)
+  updateDetails(pokemon)
   const nameSection = document.getElementById("name-section")
   const typesSection = document.getElementById("types-section")
   const pokedexEntry = document.getElementById("pokedex-entry")
 
-  pokedexSection.innerHTML = " "
-  detailsSection.innerHTML = " "
   typesSection.textContent = " "
   nameSection.textContent = " "
 
-
-  const img = document.createElement("img")
   const h2 = document.createElement("h2")
   const h3 = document.createElement("h3")
-  const hp = document.createElement("p")
-  const heightAndWeight = document.createElement("p")
   const typesList = document.createElement("ul")
   const favoriteButton = document.createElement("button")
 
-  const pokemonSprite = pokemon.sprite
-  const pokemonName = pokemon.name
-  const pokemonHp = pokemon.hp
-  const pokemonHeight = pokemon.height
-  const pokemonWeight = pokemon.weight
   const pokemonTypes = pokemon.types
 
-  h2.textContent = pokemonName
+  h2.textContent = pokemon.name
   h3.textContent = "Types:"
-  hp.textContent = `HP: ${pokemonHp}`
-  heightAndWeight.textContent = `Height: ${pokemonHeight}'', Weight: ${pokemonWeight} lbs`
   favoriteButton.textContent = "Add to Team"
   favoriteButton.id = "favorite-pokemon"
 
@@ -224,19 +232,12 @@ const displayPokemon = (pokemon) => {
     typesList.appendChild(li)
   })
 
-  img.id = "sprite"
-  img.src = pokemonSprite
-
-  pokedexSection.appendChild(img)
   nameSection.appendChild(h2)
-  detailsSection.appendChild(hp)
-  detailsSection.appendChild(heightAndWeight)
   pokedexEntry.appendChild(favoriteButton)
   typesSection.appendChild(h3)
   typesSection.appendChild(typesList)
 
   favoriteButton.addEventListener("click", (_event) => handleFavorite(pokemon))
-  img.addEventListener("click", (_event) => handleCry(pokemon.cry))
 }
 
 const createPokemon = (pokemon) => {
