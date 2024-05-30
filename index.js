@@ -190,9 +190,11 @@ const getPokemonTypes = (pokemon) => {
 const updatePokedex = (pokemon) => {
   const pokedexSection = document.getElementById("pokedex")
   pokedexSection.innerHTML = " "
+
   const img = document.createElement("img")
   img.id = "sprite"
   img.src = pokemon.sprite
+
   pokedexSection.appendChild(img)
   img.addEventListener("click", (_event) => handleCry(pokemon.cry))
 }
@@ -200,10 +202,12 @@ const updatePokedex = (pokemon) => {
 const updateDetails = (pokemon) => {
   const detailsSection = document.getElementById("details-section")
   detailsSection.innerHTML = " "
+
   const hp = document.createElement("p")
   const heightAndWeight = document.createElement("p")
   hp.textContent = `HP: ${pokemon.hp}`
   heightAndWeight.textContent = `Height: ${pokemon.height}'', Weight: ${pokemon.weight} lbs`
+
   detailsSection.appendChild(hp)
   detailsSection.appendChild(heightAndWeight)
 }
@@ -211,30 +215,20 @@ const updateDetails = (pokemon) => {
 const updateName = (pokemon) => {
   const nameSection = document.getElementById("name-section")
   nameSection.textContent = " "
+  const h2 = document.createElement("h2")
+  h2.textContent = pokemon.name
 
+  nameSection.appendChild(h2)
 }
 
-const displayPokemon = (pokemon) => {
-  updatePokedex(pokemon)
-  updateDetails(pokemon)
-  const nameSection = document.getElementById("name-section")
+const updateTypes = (pokemon) => {
   const typesSection = document.getElementById("types-section")
-  const pokedexEntry = document.getElementById("pokedex-entry")
-
   typesSection.textContent = " "
-  nameSection.textContent = " "
-
-  const h2 = document.createElement("h2")
   const h3 = document.createElement("h3")
   const typesList = document.createElement("ul")
-  const favoriteButton = document.createElement("button")
-
   const pokemonTypes = pokemon.types
 
-  h2.textContent = pokemon.name
   h3.textContent = "Types:"
-  favoriteButton.textContent = "Add to Team"
-  favoriteButton.id = "favorite-pokemon"
 
   pokemonTypes.forEach((type) => {
     const li = document.createElement("li")
@@ -242,12 +236,29 @@ const displayPokemon = (pokemon) => {
     typesList.appendChild(li)
   })
 
-  nameSection.appendChild(h2)
-  pokedexEntry.appendChild(favoriteButton)
   typesSection.appendChild(h3)
   typesSection.appendChild(typesList)
+}
+
+const updatePokedexEntry = (pokemon) => {
+  const pokedexEntry = document.getElementById("pokedex-entry")
+
+  const favoriteButton = document.createElement("button")
+
+  favoriteButton.textContent = "Add to Team"
+  favoriteButton.id = "favorite-pokemon"
+
+  pokedexEntry.appendChild(favoriteButton)
 
   favoriteButton.addEventListener("click", (_event) => handleFavorite(pokemon))
+}
+
+const displayPokemon = (pokemon) => {
+  updatePokedex(pokemon)
+  updateDetails(pokemon)
+  updateName(pokemon)
+  updateTypes(pokemon)
+  updatePokedexEntry(pokemon)
 }
 
 const createPokemon = (pokemon) => {
