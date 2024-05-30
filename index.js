@@ -1,6 +1,7 @@
 const randomPokemon = (Math.floor(Math.random() * 100) + 1)
 let count
 let currentTeam = []
+let teamSection
 
 const handleCry = (cryObj) => {
   const audioPlayer = document.getElementById("audio-player")
@@ -36,6 +37,10 @@ const handleDelete = (event) => {
     })
 }
 
+const updateTeamOrder = () => {
+
+}
+
 const handleDragStart = (event) => {
   event.dataTransfer.setData('text/html', event.target.id)
   event.dataTransfer.effectAllowed = "move"
@@ -48,8 +53,7 @@ const handleDragOver = (event) => {
 
 const handleDrop = (event) => {
   event.preventDefault();
-  const teamSection = document.getElementById("pokemon-team")
-  const draggedSlotId = event.dataTransfer.getData('text/html');
+  const draggedSlotId = event.dataTransfer.getData('text/html')
   const draggedTeamSlot = document.getElementById(draggedSlotId)
   const targetTeamSlot = event.target
 
@@ -61,12 +65,14 @@ const handleDrop = (event) => {
     teamSection.replaceChild(targetClone, draggedTeamSlot)
     teamSection.replaceChild(draggedClone, targetTeamSlot)
 
-    draggedClone.addEventListener('dragstart', handleDragStart);
-    targetClone.addEventListener('dragstart', handleDragStart);
-    draggedClone.addEventListener('dragover', handleDragOver);
-    targetClone.addEventListener('dragover', handleDragOver);
-    draggedClone.addEventListener('drop', handleDrop);
-    targetClone.addEventListener('drop', handleDrop);
+    draggedClone.addEventListener('dragstart', handleDragStart)
+    targetClone.addEventListener('dragstart', handleDragStart)
+    draggedClone.addEventListener('dragover', handleDragOver)
+    targetClone.addEventListener('dragover', handleDragOver)
+    draggedClone.addEventListener('drop', handleDrop)
+    targetClone.addEventListener('drop', handleDrop)
+
+    updateTeamOrder()
   }
 }
 
@@ -94,13 +100,6 @@ const displayTeam = (pokemon) => {
 
   currentSlot.addEventListener('dragover', handleDragOver)
 
-  // teamSection.addEventListener("drop", (event) => {
-  //   event.preventDefault();
-  //   const data = event.dataTransfer.getData('text/html')
-  //   const draggedElement = document.getElementById(data)
-  //   event.target.appendChild(draggedElement);
-  // })
-
   currentSlot.addEventListener("drop", handleDrop)
 }
 
@@ -114,6 +113,7 @@ const handleFavorite = (pokemon) => {
       count = Number(currentSlot.previousElementSibling.id) + 1
     }
     pokemon.id = count.toString()
+    pokemon.position = count
 
     fetch(`http://localhost:3000/pokemon-team`, {
       method: "POST",
@@ -206,7 +206,7 @@ const createPokemon = (pokemon) => {
     height: pokemon.height,
     weight: pokemon.weight,
     sprite: pokemon.sprites.front_default,
-    cry:pokemon.cries
+    cry: pokemon.cries,
   }
   displayPokemon(newPokemon)
 }
@@ -232,6 +232,7 @@ const handleSearch = () => {
 }
 
 const init = () => {
+  teamSection = document.getElementById("pokemon-team")
   getPokemon()
   getTeam()
   handleSearch()
