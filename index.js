@@ -1,5 +1,3 @@
-const randomPokemon = (Math.floor(Math.random() * 100) + 1)
-let count
 let currentTeam = []
 let teamSection
 
@@ -56,10 +54,8 @@ const handleDelete = (event) => {
       }
     })
     .then(resp => resp.json())
-    .then(_data => {
+    .then(deletedPokemon => {
       pokemonSlot.textContent = ""
-      const extractedId = Number(currentPokemon.id)
-      const deletedPokemon = currentTeam.find((pokemon) => Number(pokemon.id) === extractedId)
       const pokemonId = Number(deletedPokemon.id) - 1
       currentTeam.splice(pokemonId, 1)
       handleTeamOrder()
@@ -127,47 +123,50 @@ const displayTeam = (pokemon) => {
   currentSlot.appendChild(deleteButton)
 
   deleteButton.addEventListener("click", handleDelete)
-
   currentSlot.addEventListener("dragstart", handleDragStart)
-
   currentSlot.addEventListener('dragover', handleDragOver)
-
   currentSlot.addEventListener("drop", handleDrop)
 }
 
-const handleFavorite = (pokemon) => {
+const updateTeam = (pokemon) => {
+  fetch(`http://localhost:3000/pokemon-team`, {
+    method: "POST",
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(pokemon)
+  })
+  .then(resp => resp.json())
+  .then(pokemon => {
+    displayTeam(pokemon)
+    currentTeam.push(pokemon)
+  })
+}
+
+const handleAddToTeam = (pokemon) => {
   const teamSlots = [...document.getElementsByClassName("team-slots")]
   const currentSlot = teamSlots.find((slot) => slot.childElementCount < 1)
   let lastId
-  if (currentSlot.id === "1"){
-    lastId = 0
-  } else {
-    const lastPokemon = currentTeam.reduce((max, current) => {
-      return current.id > max.id ? current : max;
-    })
-    lastId = Number(lastPokemon.id)
-  }
+  const teamCheck = currentTeam.find((teamPokemon) => teamPokemon.name === pokemon.name) !== undefined
+  if (teamCheck) {
+    alert ("Already in team")
+  } else if (currentSlot !== undefined){
+    if (currentSlot.id === "1"){
+      lastId = 0
+    } else {
+      const lastPokemon = currentTeam.reduce((max, current) => {
+        return current.id > max.id ? current : max;
+      })
+      lastId = Number(lastPokemon.id)
+    }
 
-  const newId = lastId + 1
-  if (currentSlot !== undefined){
+    const newId = lastId + 1
     pokemon.id = newId.toString()
     pokemon.position = Number(currentSlot.id)
+    updateTeam(pokemon)
 
-    fetch(`http://localhost:3000/pokemon-team`, {
-      method: "POST",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(pokemon)
-    })
-    .then(resp => resp.json())
-    .then(pokemon => {
-      displayTeam(pokemon)
-      currentTeam.push(pokemon)
-    })
-  }
-  else {
+  } else {
     alert ("Team is full")
   }
 }
@@ -183,40 +182,48 @@ const getPokemonTypes = (pokemon) => {
   return pokemonTypes.map(type => type.type.name)
 }
 
-const displayPokemon = (pokemon) => {
+const updatePokedex = (pokemon) => {
   const pokedexSection = document.getElementById("pokedex")
-  const detailsSection = document.getElementById("details-section")
-  const nameSection = document.getElementById("name-section")
-  const typesSection = document.getElementById("types-section")
-  const pokedexEntry = document.getElementById("pokedex-entry")
-
   pokedexSection.innerHTML = " "
-  detailsSection.innerHTML = " "
-  typesSection.textContent = " "
-  nameSection.textContent = " "
-
 
   const img = document.createElement("img")
-  const h2 = document.createElement("h2")
-  const h3 = document.createElement("h3")
+  img.id = "sprite"
+  img.src = pokemon.sprite
+
+  pokedexSection.appendChild(img)
+  img.addEventListener("click", (_event) => handleCry(pokemon.cry))
+}
+
+const updateDetails = (pokemon) => {
+  const detailsSection = document.getElementById("details-section")
+  detailsSection.innerHTML = " "
+
   const hp = document.createElement("p")
   const heightAndWeight = document.createElement("p")
-  const typesList = document.createElement("ul")
-  const favoriteButton = document.createElement("button")
+  hp.textContent = `HP: ${pokemon.hp}`
+  heightAndWeight.textContent = `Height: ${pokemon.height}'', Weight: ${pokemon.weight} lbs`
 
-  const pokemonSprite = pokemon.sprite
-  const pokemonName = pokemon.name
-  const pokemonHp = pokemon.hp
-  const pokemonHeight = pokemon.height
-  const pokemonWeight = pokemon.weight
+  detailsSection.appendChild(hp)
+  detailsSection.appendChild(heightAndWeight)
+}
+
+const updateName = (pokemon) => {
+  const nameSection = document.getElementById("name-section")
+  nameSection.textContent = " "
+  const h2 = document.createElement("h2")
+  h2.textContent = pokemon.name
+
+  nameSection.appendChild(h2)
+}
+
+const updateTypes = (pokemon) => {
+  const typesSection = document.getElementById("types-section")
+  typesSection.textContent = " "
+  const h3 = document.createElement("h3")
+  const typesList = document.createElement("ul")
   const pokemonTypes = pokemon.types
 
-  h2.textContent = pokemonName
   h3.textContent = "Types:"
-  hp.textContent = `HP: ${pokemonHp}`
-  heightAndWeight.textContent = `Height: ${pokemonHeight}'', Weight: ${pokemonWeight} lbs`
-  favoriteButton.textContent = "Add to Team"
-  favoriteButton.id = "favorite-pokemon"
 
   pokemonTypes.forEach((type) => {
     const li = document.createElement("li")
@@ -224,19 +231,29 @@ const displayPokemon = (pokemon) => {
     typesList.appendChild(li)
   })
 
-  img.id = "sprite"
-  img.src = pokemonSprite
-
-  pokedexSection.appendChild(img)
-  nameSection.appendChild(h2)
-  detailsSection.appendChild(hp)
-  detailsSection.appendChild(heightAndWeight)
-  pokedexEntry.appendChild(favoriteButton)
   typesSection.appendChild(h3)
   typesSection.appendChild(typesList)
+}
 
-  favoriteButton.addEventListener("click", (_event) => handleFavorite(pokemon))
-  img.addEventListener("click", (_event) => handleCry(pokemon.cry))
+const updatePokedexEntry = (pokemon) => {
+  const pokedexEntry = document.getElementById("pokedex-entry")
+
+  const favoriteButton = document.createElement("button")
+
+  favoriteButton.textContent = "Add to Team"
+  favoriteButton.id = "favorite-pokemon"
+
+  pokedexEntry.appendChild(favoriteButton)
+
+  favoriteButton.addEventListener("click", (_event) => handleAddToTeam(pokemon))
+}
+
+const displayPokemon = (pokemon) => {
+  updatePokedex(pokemon)
+  updateDetails(pokemon)
+  updateName(pokemon)
+  updateTypes(pokemon)
+  updatePokedexEntry(pokemon)
 }
 
 const createPokemon = (pokemon) => {
@@ -261,7 +278,7 @@ const getTeam = () => {
   })
 }
 
-const getPokemon = (id = randomPokemon) => {
+const getPokemon = (id = (Math.floor(Math.random() * 1000) + 1)) => {
   fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
   .then(resp => resp.json())
   .then(createPokemon)
@@ -272,12 +289,17 @@ const handleSearch = () => {
   pokemonSearchForm.addEventListener("submit", handleUserInput)
 }
 
+const handleRandomPokemon = () => {
+  const randomButton = document.getElementById("random-pokemon")
+  randomButton.addEventListener("click", (_event) => getPokemon())
+}
+
 const init = () => {
   teamSection = document.getElementById("pokemon-team")
   getPokemon()
+  handleRandomPokemon()
   getTeam()
   handleSearch()
 }
-
 
 document.addEventListener("DOMContentLoaded", init)
