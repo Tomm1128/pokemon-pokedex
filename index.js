@@ -1,7 +1,6 @@
 const randomPokemon = (Math.floor(Math.random() * 100) + 1)
 let count
 let currentTeam = []
-// let currentPokemon
 let teamSection
 
 const handleCry = (cryObj) => {
@@ -131,10 +130,17 @@ const displayTeam = (pokemon) => {
 const handleFavorite = (pokemon) => {
   const teamSlots = [...document.getElementsByClassName("team-slots")]
   const currentSlot = teamSlots.find((slot) => slot.childElementCount < 1)
-  const lastPokemon = currentTeam.reduce((max, current) => {
-    return current.id > max.id ? current : max;
-  })
-  let lastId = Number(lastPokemon.id)
+  let lastId
+
+  if (currentSlot.id === "1"){
+    lastId = 1
+  } else {
+    const lastPokemon = currentTeam.reduce((max, current) => {
+      return current.id > max.id ? current : max;
+    })
+    lastId = Number(lastPokemon.id)
+  }
+
   const newId = lastId + 1
   if (currentSlot !== undefined){
     pokemon.id = newId.toString()
@@ -236,7 +242,6 @@ const createPokemon = (pokemon) => {
     sprite: pokemon.sprites.front_default,
     cry: pokemon.cries,
   }
-  // currentPokemon = pokemon
   displayPokemon(newPokemon)
 }
 
