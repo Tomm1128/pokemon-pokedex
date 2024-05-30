@@ -36,8 +36,41 @@ const handleDelete = (event) => {
     })
 }
 
-const displayTeam = (pokemon) => {
+const handleDragStart = (event) => {
+  event.dataTransfer.setData('text/html', event.target.id)
+  event.dataTransfer.effectAllowed = "move"
+}
+
+const handleDragOver = (event) => {
+  event.preventDefault();
+  event.dataTransfer.dropEffect = "move";
+}
+
+const handleDrop = (event) => {
+  event.preventDefault();
   const teamSection = document.getElementById("pokemon-team")
+  const draggedSlotId = event.dataTransfer.getData('text/html');
+  const draggedTeamSlot = document.getElementById(draggedSlotId)
+  const targetTeamSlot = event.target
+
+  if (targetTeamSlot.classList.contains('team-slots') && targetTeamSlot !== draggedTeamSlot) {
+
+    const draggedClone = draggedTeamSlot.cloneNode(true)
+    const targetClone = targetTeamSlot.cloneNode(true)
+
+    teamSection.replaceChild(targetClone, draggedTeamSlot)
+    teamSection.replaceChild(draggedClone, targetTeamSlot)
+
+    draggedClone.addEventListener('dragstart', handleDragStart);
+    targetClone.addEventListener('dragstart', handleDragStart);
+    draggedClone.addEventListener('dragover', handleDragOver);
+    targetClone.addEventListener('dragover', handleDragOver);
+    draggedClone.addEventListener('drop', handleDrop);
+    targetClone.addEventListener('drop', handleDrop);
+  }
+}
+
+const displayTeam = (pokemon) => {
   const teamSlots = [...document.getElementsByClassName("team-slots")]
   const currentSlot = teamSlots.find((slots) => slots.childElementCount < 2)
   const sprite = document.createElement("img")
@@ -57,23 +90,18 @@ const displayTeam = (pokemon) => {
 
   deleteButton.addEventListener("click", handleDelete)
 
-  // currentSlot.addEventListener("dragstart", (event) => {
-  //   event.dataTransfer.setData('text/plain', event.target.id)
-  //   event.dataTransfer.effectAllowed = "move"
-  // })
+  currentSlot.addEventListener("dragstart", handleDragStart)
 
-  // teamSection.addEventListener('dragover', (event) => {
-  //   event.preventDefault();
-  //   event.dataTransfer.dropEffect = "move";
-  // })
+  currentSlot.addEventListener('dragover', handleDragOver)
 
   // teamSection.addEventListener("drop", (event) => {
   //   event.preventDefault();
-  //   debugger
-  //   const data = event.dataTransfer.getData('text/plain')
+  //   const data = event.dataTransfer.getData('text/html')
   //   const draggedElement = document.getElementById(data)
   //   event.target.appendChild(draggedElement);
   // })
+
+  currentSlot.addEventListener("drop", handleDrop)
 }
 
 const handleFavorite = (pokemon) => {
@@ -198,12 +226,15 @@ const getPokemon = (id = randomPokemon) => {
   .then(createPokemon)
 }
 
-const init = () => {
+const handleSearch = () => {
   const pokemonSearchForm = document.getElementById("pokemon-search")
+  pokemonSearchForm.addEventListener("submit", handleUserInput)
+}
+
+const init = () => {
   getPokemon()
   getTeam()
-
-  pokemonSearchForm.addEventListener("submit", handleUserInput)
+  handleSearch()
 }
 
 
