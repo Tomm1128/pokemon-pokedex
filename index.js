@@ -1,6 +1,7 @@
 const randomPokemon = (Math.floor(Math.random() * 100) + 1)
 let count
 let currentTeam = []
+// let currentPokemon
 let teamSection
 
 const handleCry = (cryObj) => {
@@ -15,7 +16,8 @@ const handleCry = (cryObj) => {
 
 const handleDelete = (event) => {
   const pokemonSlot = event.target.parentElement
-  const id = pokemonSlot.id
+  const currentPokemon = currentTeam.find((pokemon) => pokemonSlot.childNodes[1].textContent === pokemon.name)
+  const id = currentPokemon.id
 
   fetch(`http://localhost:3000/pokemon-team/${id}`, {
       method: "Delete",
@@ -122,6 +124,8 @@ const displayTeam = (pokemon) => {
   currentSlot.addEventListener('dragover', handleDragOver)
 
   currentSlot.addEventListener("drop", handleDrop)
+
+  currentTeam.push(pokemon)
 }
 
 const handleFavorite = (pokemon) => {
@@ -224,6 +228,7 @@ const createPokemon = (pokemon) => {
     sprite: pokemon.sprites.front_default,
     cry: pokemon.cries,
   }
+  // currentPokemon = pokemon
   displayPokemon(newPokemon)
 }
 
@@ -231,7 +236,6 @@ const getTeam = () => {
   fetch(`http://localhost:3000/pokemon-team`)
   .then(resp => resp.json())
   .then(team => {
-    currentTeam = team
     team.forEach(pokemon => displayTeam(pokemon) )
   })
 }
