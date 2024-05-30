@@ -126,7 +126,8 @@ h2 {
   grid-row-end:2;
   grid-column-start: 1;
   grid-column-end: 1;
-  display:grid
+  display:grid;
+  /* background-color: lightgrey; */
 }
 
 .team-slots{
@@ -137,7 +138,8 @@ h2 {
   border-radius: 25px;
   margin: 5px;
   height: 75px;
-  width: 400px
+  width: 400px;
+  cursor: grab;
 }
 
 .remove-from-team{
@@ -147,4 +149,10 @@ h2 {
 .team-sprite {
   height: 70px;
   width: 70px;
+}
+
+h3 {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-end;
 }

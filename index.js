@@ -1,6 +1,7 @@
 const randomPokemon = (Math.floor(Math.random() * 100) + 1)
 let count
 let currentTeam = []
+let teamSection
 
 const handleCry = (cryObj) => {
   const audioPlayer = document.getElementById("audio-player")
@@ -12,11 +13,42 @@ const handleCry = (cryObj) => {
   audioPlayer.play()
 }
 
-const handleDelete = (event) => {
-  const teamSlots = [...document.getElementsByClassName("team-slots")]
-  const pokemonSlot = event.target.parentElement
-  const id = pokemonSlot.id
+const updateTeamOrder = () => {
+  currentTeam.forEach((pokemon) => {
+    const id = pokemon.id
+    fetch(`http://localhost:3000/pokemon-team/${id}`, {
+      method: "PATCH",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        position: pokemon.position
+      })
+    })
+    .then(resp => resp.json())
+    .then(pokemon => {
+      displayTeam(pokemon)
+    })
+    .catch(console.log)
+  })
+}
 
+const handleTeamOrder = (oldSlot, newSlot) => {
+  currentTeam.map((pokemon) => {
+    if (pokemon.position === Number(oldSlot)){
+      pokemon.position = Number(newSlot)
+    } else if (pokemon.position === Number(newSlot)){
+      pokemon.position = Number(oldSlot)
+    }
+  })
+  updateTeamOrder()
+}
+
+const handleDelete = (event) => {
+  const pokemonSlot = event.target.parentElement
+  const currentPokemon = currentTeam.find((pokemon) => pokemonSlot.childNodes[1].textContent === pokemon.name)
+  const id = currentPokemon.id
   fetch(`http://localhost:3000/pokemon-team/${id}`, {
       method: "Delete",
       headers: {
@@ -25,20 +57,61 @@ const handleDelete = (event) => {
     })
     .then(resp => resp.json())
     .then(_data => {
-      teamSlots.forEach((slot) => {
-        slot.textContent = ""
-        slot.id = ""
-      })
-      getTeam()
+      pokemonSlot.textContent = ""
+      const extractedId = Number(currentPokemon.id)
+      const deletedPokemon = currentTeam.find((pokemon) => Number(pokemon.id) === extractedId)
+      const pokemonId = Number(deletedPokemon.id) - 1
+      currentTeam.splice(pokemonId, 1)
+      handleTeamOrder()
     })
     .catch(error => {
       console.error('Error deleting resource:', error);
     })
 }
 
+const handleDragStart = (event) => {
+  event.dataTransfer.setData('text/html', event.target.id)
+  event.dataTransfer.effectAllowed = "move"
+}
+
+const handleDragOver = (event) => {
+  event.preventDefault();
+  event.dataTransfer.dropEffect = "move";
+}
+
+const handleDrop = (event) => {
+  event.preventDefault();
+  const draggedSlotId = event.dataTransfer.getData('text/html')
+  const draggedTeamSlot = document.getElementById(draggedSlotId)
+  const targetTeamSlot = event.target
+
+  if (targetTeamSlot.classList.contains('team-slots') && targetTeamSlot !== draggedTeamSlot) {
+
+    const draggedClone = draggedTeamSlot.cloneNode(true)
+    const targetClone = targetTeamSlot.cloneNode(true)
+
+    teamSection.replaceChild(targetClone, draggedTeamSlot)
+    teamSection.replaceChild(draggedClone, targetTeamSlot)
+
+    draggedClone.id = targetTeamSlot.id
+    targetClone.id = draggedTeamSlot.id
+
+    draggedClone.addEventListener('dragstart', handleDragStart)
+    targetClone.addEventListener('dragstart', handleDragStart)
+    draggedClone.addEventListener('dragover', handleDragOver)
+    targetClone.addEventListener('dragover', handleDragOver)
+    draggedClone.addEventListener('drop', handleDrop)
+    targetClone.addEventListener('drop', handleDrop)
+
+    handleTeamOrder(targetClone.id, draggedClone.id)
+  }
+}
+
 const displayTeam = (pokemon) => {
   const teamSlots = [...document.getElementsByClassName("team-slots")]
-  const currentSlot = teamSlots.find((slots) => slots.childElementCount < 2)
+  const currentSlot = teamSlots.find((slot) => Number(slot.id) === pokemon.position)
+
+  currentSlot.textContent = ""
   const sprite = document.createElement("img")
   const name = document.createElement("h3")
   const deleteButton = document.createElement("button")
@@ -48,21 +121,37 @@ const displayTeam = (pokemon) => {
   name.textContent = pokemon.name
   deleteButton.className = "remove-from-team"
   deleteButton.textContent = "X"
-  currentSlot.id = pokemon.id
 
   currentSlot.appendChild(sprite)
   currentSlot.appendChild(name)
   currentSlot.appendChild(deleteButton)
 
   deleteButton.addEventListener("click", handleDelete)
+
+  currentSlot.addEventListener("dragstart", handleDragStart)
+
+  currentSlot.addEventListener('dragover', handleDragOver)
+
+  currentSlot.addEventListener("drop", handleDrop)
 }
 
 const handleFavorite = (pokemon) => {
   const teamSlots = [...document.getElementsByClassName("team-slots")]
-  const currentSlot = teamSlots.find((slots) => slots.id === "")
+  const currentSlot = teamSlots.find((slot) => slot.childElementCount < 1)
+  let lastId
+  if (currentSlot.id === "1"){
+    lastId = 0
+  } else {
+    const lastPokemon = currentTeam.reduce((max, current) => {
+      return current.id > max.id ? current : max;
+    })
+    lastId = Number(lastPokemon.id)
+  }
+
+  const newId = lastId + 1
   if (currentSlot !== undefined){
-    count = Number(currentSlot.previousElementSibling.id) + 1
-    pokemon.id = count.toString()
+    pokemon.id = newId.toString()
+    pokemon.position = Number(currentSlot.id)
 
     fetch(`http://localhost:3000/pokemon-team`, {
       method: "POST",
@@ -73,7 +162,10 @@ const handleFavorite = (pokemon) => {
       body: JSON.stringify(pokemon)
     })
     .then(resp => resp.json())
-    .then(displayTeam)
+    .then(pokemon => {
+      displayTeam(pokemon)
+      currentTeam.push(pokemon)
+    })
   }
   else {
     alert ("Team is full")
@@ -100,6 +192,9 @@ const displayPokemon = (pokemon) => {
 
   pokedexSection.innerHTML = " "
   detailsSection.innerHTML = " "
+  typesSection.textContent = " "
+  nameSection.textContent = " "
+
 
   const img = document.createElement("img")
   const h2 = document.createElement("h2")
@@ -152,7 +247,7 @@ const createPokemon = (pokemon) => {
     height: pokemon.height,
     weight: pokemon.weight,
     sprite: pokemon.sprites.front_default,
-    cry:pokemon.cries
+    cry: pokemon.cries,
   }
   displayPokemon(newPokemon)
 }
@@ -172,12 +267,16 @@ const getPokemon = (id = randomPokemon) => {
   .then(createPokemon)
 }
 
-const init = () => {
+const handleSearch = () => {
   const pokemonSearchForm = document.getElementById("pokemon-search")
+  pokemonSearchForm.addEventListener("submit", handleUserInput)
+}
+
+const init = () => {
+  teamSection = document.getElementById("pokemon-team")
   getPokemon()
   getTeam()
-
-  pokemonSearchForm.addEventListener("submit", handleUserInput)
+  handleSearch()
 }
 
 
