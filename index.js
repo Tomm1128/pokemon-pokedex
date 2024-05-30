@@ -139,9 +139,11 @@ const handleFavorite = (pokemon) => {
   const teamSlots = [...document.getElementsByClassName("team-slots")]
   const currentSlot = teamSlots.find((slot) => slot.childElementCount < 1)
   let lastId
+  const teamCheck = currentTeam.find((teamPokemon) => teamPokemon.name === pokemon.name) !== undefined
   debugger
-
-  if (currentSlot !== undefined){
+  if (teamCheck) {
+    alert ("Already in team")
+  } else if (currentSlot !== undefined){
 
     if (currentSlot.id === "1"){
       lastId = 0
@@ -169,8 +171,7 @@ const handleFavorite = (pokemon) => {
       displayTeam(pokemon)
       currentTeam.push(pokemon)
     })
-  }
-  else {
+  } else {
     alert ("Team is full")
   }
 }
