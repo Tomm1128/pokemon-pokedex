@@ -56,10 +56,8 @@ const handleDelete = (event) => {
       }
     })
     .then(resp => resp.json())
-    .then(_data => {
+    .then(deletedPokemon => {
       pokemonSlot.textContent = ""
-      const extractedId = Number(currentPokemon.id)
-      const deletedPokemon = currentTeam.find((pokemon) => Number(pokemon.id) === extractedId)
       const pokemonId = Number(deletedPokemon.id) - 1
       currentTeam.splice(pokemonId, 1)
       handleTeamOrder()
@@ -127,24 +125,36 @@ const displayTeam = (pokemon) => {
   currentSlot.appendChild(deleteButton)
 
   deleteButton.addEventListener("click", handleDelete)
-
   currentSlot.addEventListener("dragstart", handleDragStart)
-
   currentSlot.addEventListener('dragover', handleDragOver)
-
   currentSlot.addEventListener("drop", handleDrop)
 }
+
+const updateTeam = (pokemon) => {
+  fetch(`http://localhost:3000/pokemon-team`, {
+    method: "POST",
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(pokemon)
+  })
+  .then(resp => resp.json())
+  .then(pokemon => {
+    displayTeam(pokemon)
+    currentTeam.push(pokemon)
+  })
+}
+
 
 const handleFavorite = (pokemon) => {
   const teamSlots = [...document.getElementsByClassName("team-slots")]
   const currentSlot = teamSlots.find((slot) => slot.childElementCount < 1)
   let lastId
   const teamCheck = currentTeam.find((teamPokemon) => teamPokemon.name === pokemon.name) !== undefined
-  debugger
   if (teamCheck) {
     alert ("Already in team")
   } else if (currentSlot !== undefined){
-
     if (currentSlot.id === "1"){
       lastId = 0
     } else {
@@ -157,20 +167,8 @@ const handleFavorite = (pokemon) => {
     const newId = lastId + 1
     pokemon.id = newId.toString()
     pokemon.position = Number(currentSlot.id)
+    updateTeam(pokemon)
 
-    fetch(`http://localhost:3000/pokemon-team`, {
-      method: "POST",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(pokemon)
-    })
-    .then(resp => resp.json())
-    .then(pokemon => {
-      displayTeam(pokemon)
-      currentTeam.push(pokemon)
-    })
   } else {
     alert ("Team is full")
   }
