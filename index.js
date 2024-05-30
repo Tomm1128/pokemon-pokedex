@@ -147,7 +147,7 @@ const updateTeam = (pokemon) => {
 }
 
 
-const handleFavorite = (pokemon) => {
+const handleAddToTeam = (pokemon) => {
   const teamSlots = [...document.getElementsByClassName("team-slots")]
   const currentSlot = teamSlots.find((slot) => slot.childElementCount < 1)
   let lastId
@@ -248,7 +248,7 @@ const updatePokedexEntry = (pokemon) => {
 
   pokedexEntry.appendChild(favoriteButton)
 
-  favoriteButton.addEventListener("click", (_event) => handleFavorite(pokemon))
+  favoriteButton.addEventListener("click", (_event) => handleAddToTeam(pokemon))
 }
 
 const displayPokemon = (pokemon) => {
