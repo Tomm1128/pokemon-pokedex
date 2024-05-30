@@ -4,10 +4,13 @@ body {
 }
 
 #header {
+  display: grid;
   grid-column-start: 2;
   grid-column-end: 2;
   grid-row-start: 1;
   grid-row-end: 1;
+  align-items: center;
+  justify-items: center;
 }
 
 h1 {
@@ -127,7 +130,6 @@ h2 {
   grid-column-start: 1;
   grid-column-end: 1;
   display:grid;
-  /* background-color: lightgrey; */
 }
 
 .team-slots{
@@ -155,4 +157,8 @@ h3 {
   display: flex;
   justify-content: flex-start;
   align-items: flex-end;
+}
+
+#random-pokemon {
+  width: 100px;
 }
