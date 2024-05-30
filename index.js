@@ -14,7 +14,6 @@ const handleCry = (cryObj) => {
 }
 
 const handleDelete = (event) => {
-  const teamSlots = [...document.getElementsByClassName("team-slots")]
   const pokemonSlot = event.target.parentElement
   const id = pokemonSlot.id
 
@@ -26,11 +25,8 @@ const handleDelete = (event) => {
     })
     .then(resp => resp.json())
     .then(_data => {
-      teamSlots.forEach((slot) => {
-        slot.textContent = ""
-      })
-      //updateTeamOrder()
-      getTeam()
+      pokemonSlot.textContent = ""
+      updateTeamOrder()
     })
     .catch(error => {
       console.error('Error deleting resource:', error);
@@ -38,27 +34,30 @@ const handleDelete = (event) => {
 }
 
 const updateTeamOrder = () => {
-  let newId = 0
+  const teamSlots = [...document.getElementsByClassName("team-slots")]
   const slots = Array.from(teamSection.children)
-  let newOrder = slots.map((slot, index) => ({
-    id: slot.id,
-    position: index + 1
-  }))
+  const newTeamOrder = slots.filter((slot) => slot.childElementCount > 1)
 
-  // debugger
-
-  // newOrder.forEach(() => {
-  //   fetch(`http://localhost:3000/pokemon-team`, {
-  //     method: "PATCH",
-  //     headers: {
-  //       'Accept': 'application/json',
-  //       'Content-Type': 'application/json'
-  //     },
-  //     body: JSON.stringify(newOrder)
-  //   })
-  //   .then(resp => resp.json())
-  //   .then(console.log)
-  // })
+  newTeamOrder.forEach((slot, index) => {
+    const id = slot.id
+    if(slot.childElementCount > 1){
+      fetch(`http://localhost:3000/pokemon-team/${id}`, {
+        method: "PATCH",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          position: index + 1
+        })
+      })
+      .catch(console.log)
+    }
+  })
+  teamSlots.forEach((slot) => {
+    slot.textContent = ""
+  })
+  getTeam()
 }
 
 const handleDragStart = (event) => {
@@ -93,6 +92,9 @@ const handleDrop = (event) => {
     targetClone.addEventListener('drop', handleDrop)
 
     updateTeamOrder()
+
+    draggedClone.id = targetTeamSlot.id
+    targetClone.id = draggedTeamSlot.id
   }
 }
 
