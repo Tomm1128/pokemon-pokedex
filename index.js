@@ -1,4 +1,3 @@
-const randomPokemon = (Math.floor(Math.random() * 100) + 1)
 let count
 let currentTeam = []
 let teamSection
@@ -281,7 +280,7 @@ const getTeam = () => {
   })
 }
 
-const getPokemon = (id = randomPokemon) => {
+const getPokemon = (id = (Math.floor(Math.random() * 1000) + 1)) => {
   fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
   .then(resp => resp.json())
   .then(createPokemon)
@@ -292,9 +291,15 @@ const handleSearch = () => {
   pokemonSearchForm.addEventListener("submit", handleUserInput)
 }
 
+const handleRandomPokemon = () => {
+  const randomButton = document.getElementById("random-pokemon")
+  randomButton.addEventListener("click", (_event) => getPokemon())
+}
+
 const init = () => {
   teamSection = document.getElementById("pokemon-team")
   getPokemon()
+  handleRandomPokemon()
   getTeam()
   handleSearch()
 }
