@@ -28,8 +28,8 @@ const handleDelete = (event) => {
     .then(_data => {
       teamSlots.forEach((slot) => {
         slot.textContent = ""
-        // slot.id = ""
       })
+      //updateTeamOrder()
       getTeam()
     })
     .catch(error => {
@@ -98,7 +98,7 @@ const handleDrop = (event) => {
 
 const displayTeam = (pokemon) => {
   const teamSlots = [...document.getElementsByClassName("team-slots")]
-  const currentSlot = teamSlots.find((slots) => slots.childElementCount < 2)
+  const currentSlot = teamSlots.find((slot) => Number(slot.id) === pokemon.position)
   const sprite = document.createElement("img")
   const name = document.createElement("h3")
   const deleteButton = document.createElement("button")
