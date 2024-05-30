@@ -13,11 +13,42 @@ const handleCry = (cryObj) => {
   audioPlayer.play()
 }
 
+const updateTeamOrder = () => {
+  currentTeam.forEach((pokemon) => {
+    const id = pokemon.id
+    fetch(`http://localhost:3000/pokemon-team/${id}`, {
+      method: "PATCH",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        position: pokemon.position
+      })
+    })
+    .then(resp => resp.json())
+    .then(pokemon => {
+      displayTeam(pokemon)
+    })
+    .catch(console.log)
+  })
+}
+
+const handleTeamOrder = (oldSlot, newSlot) => {
+  currentTeam.map((pokemon) => {
+    if (pokemon.position === Number(oldSlot)){
+      pokemon.position = Number(newSlot)
+    } else if (pokemon.position === Number(newSlot)){
+      pokemon.position = Number(oldSlot)
+    }
+  })
+  updateTeamOrder()
+}
+
 const handleDelete = (event) => {
   const pokemonSlot = event.target.parentElement
   const currentPokemon = currentTeam.find((pokemon) => pokemonSlot.childNodes[1].textContent === pokemon.name)
   const id = currentPokemon.id
-
   fetch(`http://localhost:3000/pokemon-team/${id}`, {
       method: "Delete",
       headers: {
@@ -27,40 +58,15 @@ const handleDelete = (event) => {
     .then(resp => resp.json())
     .then(_data => {
       pokemonSlot.textContent = ""
-      currentTeam.pop()
-      updateTeamOrder()
+      const extractedId = Number(currentPokemon.id)
+      const deletedPokemon = currentTeam.find((pokemon) => Number(pokemon.id) === extractedId)
+      const pokemonId = Number(deletedPokemon.id) - 1
+      currentTeam.splice(pokemonId, 1)
+      handleTeamOrder()
     })
     .catch(error => {
       console.error('Error deleting resource:', error);
     })
-}
-
-const updateTeamOrder = () => {
-  const teamSlots = [...document.getElementsByClassName("team-slots")]
-  const slots = Array.from(teamSection.children)
-  const newTeamOrder = slots.filter((slot) => slot.childElementCount > 1)
-
-  newTeamOrder.forEach((slot, index) => {
-    const currentPokemon = currentTeam.find((pokemon) => slot.childNodes[1].textContent === pokemon.name)
-    const id = currentPokemon.id
-    if(slot.childElementCount > 1){
-      fetch(`http://localhost:3000/pokemon-team/${id}`, {
-        method: "PATCH",
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          position: Number(slot.id)
-        })
-      })
-      .catch(console.log)
-    }
-  })
-  teamSlots.forEach((slot) => {
-    slot.textContent = ""
-  })
-  getTeam()
 }
 
 const handleDragStart = (event) => {
@@ -97,13 +103,15 @@ const handleDrop = (event) => {
     draggedClone.addEventListener('drop', handleDrop)
     targetClone.addEventListener('drop', handleDrop)
 
-    updateTeamOrder()
+    handleTeamOrder(targetClone.id, draggedClone.id)
   }
 }
 
 const displayTeam = (pokemon) => {
   const teamSlots = [...document.getElementsByClassName("team-slots")]
   const currentSlot = teamSlots.find((slot) => Number(slot.id) === pokemon.position)
+
+  currentSlot.textContent = ""
   const sprite = document.createElement("img")
   const name = document.createElement("h3")
   const deleteButton = document.createElement("button")
@@ -131,9 +139,8 @@ const handleFavorite = (pokemon) => {
   const teamSlots = [...document.getElementsByClassName("team-slots")]
   const currentSlot = teamSlots.find((slot) => slot.childElementCount < 1)
   let lastId
-
   if (currentSlot.id === "1"){
-    lastId = 1
+    lastId = 0
   } else {
     const lastPokemon = currentTeam.reduce((max, current) => {
       return current.id > max.id ? current : max;
