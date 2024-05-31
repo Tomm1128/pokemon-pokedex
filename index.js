@@ -29,7 +29,7 @@ const updateTeamOrder = () => {
       displayTeam(pokemon)
     })
     .catch(error => {
-      alert('Error deleting resource:', error);
+      alert('Error patching resource:', error);
     })
   })
 }
