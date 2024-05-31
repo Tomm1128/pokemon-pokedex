@@ -15,11 +15,11 @@ To get started with setting up my project, install a json-server on your local m
 ```sh
 npm install
 ```
-## Setup
-
 ```sh
 npm install -g json-server
 ```
+## Setup
+
 There should be an empty db files ready to go, you just have to link it to the JSON server by running
 
 ```sh
