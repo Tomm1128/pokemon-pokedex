@@ -36,4 +36,6 @@ Features include:
 - You can drag and drop the pokemon in the Team Section to re-arrange the order if you would like. This order should persist when refreshing the page. It will update the DB with the new order.
 - You are able to remove Pokemon from the Team to add new ones.
 
+  
+![pokedex-project-v3](https://github.com/Tomm1128/pokemon-pokedex/assets/44681574/3b183fae-049d-416f-a005-639b99b95c0e)
  
