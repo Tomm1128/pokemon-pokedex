@@ -28,7 +28,9 @@ const updateTeamOrder = () => {
     .then(pokemon => {
       displayTeam(pokemon)
     })
-    .catch(console.log)
+    .catch(error => {
+      alert('Error deleting resource:', error);
+    })
   })
 }
 
@@ -61,7 +63,7 @@ const handleDelete = (event) => {
       handleTeamOrder()
     })
     .catch(error => {
-      console.error('Error deleting resource:', error);
+      alert('Error deleting resource:', error);
     })
 }
 
