@@ -13,9 +13,6 @@ This project is a Single Page Application (SPA) built with using CSS, HTML, and 
 To get started with setting up my project, install a json-server on your local machine by running this command
 
 ```sh
-npm install
-```
-```sh
 npm install -g json-server
 ```
 ## Setup
